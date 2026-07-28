@@ -1,0 +1,8 @@
+.venv/
+node_modules/
+dist/
+trips.db
+.secret_key
+.DS_Store
+*.pyc
+__pycache__/

@@ -91,3 +91,4 @@ Access the application in your browser at `http://localhost:3000`. You will be d
 
 ## License
 MIT License
+# AI-Trip-Planner

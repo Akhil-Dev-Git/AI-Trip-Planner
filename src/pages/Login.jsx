@@ -61,34 +61,34 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
-              <Input 
-                id="username" 
-                type="text" 
-                required 
+              <Input
+                id="username"
+                type="text"
+                required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
-            
+
             {!isLogin && (
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  required 
+                <Input
+                  id="email"
+                  type="email"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                required 
+              <Input
+                id="password"
+                type="password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -110,7 +110,7 @@ export default function Login() {
             <span className="text-gray-500">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
             </span>
-            <button 
+            <button
               onClick={() => {
                 setIsLogin(!isLogin);
                 setError('');

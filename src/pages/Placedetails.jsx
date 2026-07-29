@@ -41,11 +41,42 @@ export default function PlaceDetails() {
     setIsDirectionsOpen(true);
     setIsDirectionsLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:5001/api/navigation/directions?destination_id=${place.id}&dest_lat=${place.latitude}&dest_lng=${place.longitude}`);
-      if (response.ok) {
-        const data = await response.json();
-        setDirectionsData(data);
-      }
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Client-side mock of the directions API
+      const mockData = {
+        distance_km: Math.floor(Math.random() * 50) + 10,
+        origin: { name: "Current Location" },
+        modes: {
+          driving: {
+            name: "Driving",
+            duration_text: "45 mins",
+            estimated_cost: 300,
+            co2_emissions_kg: 5.2
+          },
+          transit: {
+            name: "Public Transit",
+            duration_text: "1h 15 mins",
+            estimated_cost: 50,
+            co2_emissions_kg: 1.1
+          },
+          walking: {
+            name: "Walking",
+            duration_text: "3 hours",
+            estimated_cost: 0,
+            co2_emissions_kg: 0
+          }
+        },
+        steps: [
+          { instruction: "Head north on Main St.", distance_offset_km: 0 },
+          { instruction: "Turn right onto the highway", distance_offset_km: 2.5 },
+          { instruction: `Continue towards ${place.name}`, distance_offset_km: 12.0 },
+          { instruction: `Arrive at ${place.name}`, distance_offset_km: 15.0 }
+        ]
+      };
+      
+      setDirectionsData(mockData);
     } catch (error) {
       console.error("Error fetching directions:", error);
     }

@@ -22,7 +22,8 @@ export class Place {
 
   static async list() {
     try {
-      const response = await fetch(`${API_BASE}/places`);
+      const baseUrl = import.meta.env.BASE_URL || '/';
+      const response = await fetch(`${baseUrl}places.json`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -36,12 +37,8 @@ export class Place {
 
   static async findById(id) {
     try {
-      const response = await fetch(`${API_BASE}/places/${id}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return new Place(data);
+      const places = await this.list();
+      return places.find(p => String(p.id) === String(id)) || null;
     } catch (error) {
       console.error(`Error fetching place with ID ${id}:`, error);
       return null;

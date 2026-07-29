@@ -4,6 +4,7 @@ import { Trip } from "@/entities/trip";
 import { useTravelStats } from "@/contexts/TravelStatsContext";
 import { Place } from "@/entities/place";
 import { useLocation } from "react-router-dom";
+import { chatWithGroq, getGroqApiKey } from "../utils/ai";
 import { motion } from "framer-motion";
 import {
   Calendar,
@@ -107,23 +108,53 @@ export default function PlanTrip() {
       alert("Please enter both Starting From and Primary Destination first.");
       return;
     }
+    
+    const apiKey = getGroqApiKey();
+    if (!apiKey) {
+      alert("Please configure your Groq API Key in the AI Chat Assistant page first.");
+      return;
+    }
+
     setIsAnalyzing(true);
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/ai/analyze-places", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          origin: tripData.origin,
-          destination: tripData.destination,
-          mood: tripData.mood
-        })
-      });
-      const data = await response.json();
-      if (data.place_ids && data.place_ids.length > 0) {
-        setAnalyzedPlaceIds(data.place_ids);
+      // Build a simplified places catalog for the prompt to save tokens
+      const catalog = places.map(p => ({
+        id: p.id,
+        name: p.name,
+        location: p.location,
+        mood: p.mood
+      }));
+
+      const prompt = `
+I am traveling from ${tripData.origin} to ${tripData.destination}.
+The desired mood of the trip is: ${tripData.mood || "Any"}.
+
+Here is a catalog of available places:
+${JSON.stringify(catalog)}
+
+Return a JSON array of up to 10 'id' strings from the catalog that best fit my trip.
+Return ONLY the raw JSON array of strings, nothing else. No markdown, no explanations.
+`;
+
+      const response = await chatWithGroq([{ role: "user", content: prompt }], apiKey);
+      
+      // Attempt to parse the response
+      let placeIds = [];
+      try {
+        const cleanJson = response.replace(/```json/g, '').replace(/```/g, '').trim();
+        placeIds = JSON.parse(cleanJson);
+      } catch (e) {
+        console.error("Failed to parse Groq response:", response);
+      }
+      
+      if (Array.isArray(placeIds) && placeIds.length > 0) {
+        setAnalyzedPlaceIds(placeIds);
+      } else {
+        alert("The AI couldn't find exact matches for your trip. Try refining your destination or mood.");
       }
     } catch (error) {
       console.error("Error analyzing places:", error);
+      alert(error.message || "Failed to analyze places");
     }
     setIsAnalyzing(false);
   };

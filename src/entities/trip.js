@@ -21,12 +21,13 @@ export class Trip {
 
   static async list() {
     try {
-      const response = await fetch(`${API_BASE}/trips`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data.map(item => new Trip(item));
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const userStr = localStorage.getItem('tripPlannerUser');
+      if (!userStr) return [];
+      const user = JSON.parse(userStr);
+      const allTrips = JSON.parse(localStorage.getItem('tripPlannerTripsDb') || '[]');
+      const userTrips = allTrips.filter(t => t.username === user.username);
+      return userTrips.map(item => new Trip(item)).reverse();
     } catch (error) {
       console.error("Error fetching trips:", error);
       return [];
@@ -35,18 +36,17 @@ export class Trip {
 
   static async create(data) {
     try {
-      const response = await fetch(`${API_BASE}/trips`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: jsonSafeStringify(data)
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const savedData = await response.json();
-      return new Trip(savedData);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const userStr = localStorage.getItem('tripPlannerUser');
+      if (!userStr) throw new Error("Must be logged in to create a trip");
+      const user = JSON.parse(userStr);
+      
+      const allTrips = JSON.parse(localStorage.getItem('tripPlannerTripsDb') || '[]');
+      const newTrip = { ...data, id: Date.now().toString(), username: user.username };
+      allTrips.push(newTrip);
+      
+      localStorage.setItem('tripPlannerTripsDb', JSON.stringify(allTrips));
+      return new Trip(newTrip);
     } catch (error) {
       console.error("Error creating trip:", error);
       throw error;
@@ -55,18 +55,17 @@ export class Trip {
 
   static async update(id, data) {
     try {
-      const response = await fetch(`${API_BASE}/trips/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: jsonSafeStringify(data)
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const updatedData = await response.json();
-      return new Trip(updatedData);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const allTrips = JSON.parse(localStorage.getItem('tripPlannerTripsDb') || '[]');
+      const index = allTrips.findIndex(t => t.id === id);
+      
+      if (index === -1) throw new Error("Trip not found");
+      
+      const updatedTrip = { ...allTrips[index], ...data, id };
+      allTrips[index] = updatedTrip;
+      
+      localStorage.setItem('tripPlannerTripsDb', JSON.stringify(allTrips));
+      return new Trip(updatedTrip);
     } catch (error) {
       console.error(`Error updating trip ${id}:`, error);
       throw error;
@@ -75,13 +74,12 @@ export class Trip {
 
   static async delete(id) {
     try {
-      const response = await fetch(`${API_BASE}/trips/${id}`, {
-        method: "DELETE"
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
+      await new Promise(resolve => setTimeout(resolve, 300));
+      let allTrips = JSON.parse(localStorage.getItem('tripPlannerTripsDb') || '[]');
+      allTrips = allTrips.filter(t => t.id !== id);
+      
+      localStorage.setItem('tripPlannerTripsDb', JSON.stringify(allTrips));
+      return { success: true };
     } catch (error) {
       console.error(`Error deleting trip ${id}:`, error);
       throw error;

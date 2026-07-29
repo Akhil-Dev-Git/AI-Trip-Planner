@@ -11,22 +11,25 @@ import {
   HelpCircle,
   Clock,
   Briefcase,
-  Coffee
+  Coffee,
+  Settings,
+  X,
+  Key
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
-
-const API_BASE = "http://127.0.0.1:5001/api";
+import { streamChatWithGroq, getGroqApiKey, setGroqApiKey as saveGroqApiKey } from "../utils/ai";
 
 export default function AIChatAssistant() {
   const location = useLocation();
   const messagesEndRef = useRef(null);
   const hasSentPrefill = useRef(false);
   
-  const [models, setModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState("");
-  const [isOnline, setIsOnline] = useState(false);
+  const [apiKey, setApiKey] = useState(getGroqApiKey() || "");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(!getGroqApiKey());
+  const [tempApiKey, setTempApiKey] = useState(apiKey);
+  
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -35,7 +38,12 @@ export default function AIChatAssistant() {
   ]);
   const [inputText, setInputText] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [isLoadingModels, setIsLoadingModels] = useState(true);
+
+  const saveSettings = () => {
+    setApiKey(tempApiKey);
+    saveGroqApiKey(tempApiKey);
+    setIsSettingsOpen(false);
+  };
 
   // Parse markdown styling into basic HTML
   const parseMarkdown = (text) => {
@@ -78,31 +86,6 @@ export default function AIChatAssistant() {
     return formattedLines.join('\n');
   };
 
-  // Load models on mount
-  useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        setIsLoadingModels(true);
-        const response = await fetch(`${API_BASE}/ai/models`);
-        const data = await response.json();
-        setModels(data.models || []);
-        setIsOnline(data.online || false);
-        
-        if (data.models && data.models.length > 0) {
-          // Prefer coder or 8b model if available, otherwise first
-          const preferred = data.models.find(m => m.includes("qwen3") || m.includes("8b")) || data.models[0];
-          setSelectedModel(preferred);
-        }
-      } catch (err) {
-        console.error("Failed to load models:", err);
-        setIsOnline(false);
-      } finally {
-        setIsLoadingModels(false);
-      }
-    };
-    fetchModels();
-  }, []);
-
   // Handle URL prefill context
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -117,7 +100,7 @@ export default function AIChatAssistant() {
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [location.search, selectedModel]);
+  }, [location.search, apiKey]);
 
   // Scroll to bottom of chat
   useEffect(() => {
@@ -129,6 +112,11 @@ export default function AIChatAssistant() {
     const prompt = customPrompt || inputText;
     if (!prompt.trim() || isSending) return;
 
+    if (!apiKey) {
+      setIsSettingsOpen(true);
+      return;
+    }
+
     setInputText("");
     const newMessages = [...messages, { role: "user", content: prompt }];
     setMessages(newMessages);
@@ -137,74 +125,42 @@ export default function AIChatAssistant() {
     // Add an empty assistant message which we will populate chunk-by-chunk
     setMessages(prev => [...prev, { role: "assistant", content: "" }]);
 
-    try {
-      const response = await fetch(`${API_BASE}/ai/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: selectedModel || "qwen3:latest",
-          messages: newMessages
-        })
-      });
+    let assistantText = "";
+    
+    const groqMessages = [
+      { role: "system", content: "You are a helpful, expert travel assistant. Provide concise, accurate, and inspiring travel advice and itineraries. Format with markdown." },
+      ...newMessages
+    ];
 
-      if (!response.ok) {
-        throw new Error("Failed to generate response");
+    await streamChatWithGroq(
+      groqMessages,
+      apiKey,
+      (chunk) => {
+        assistantText += chunk;
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: "assistant",
+            content: assistantText
+          };
+          return updated;
+        });
+      },
+      (errorMsg) => {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: "assistant",
+            content: `Error: ${errorMsg}`
+          };
+          return updated;
+        });
+        setIsSending(false);
+      },
+      () => {
+        setIsSending(false);
       }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let finished = false;
-      let assistantText = "";
-
-      while (!finished) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-        for (const line of lines) {
-          if (line.trim().startsWith("data: ")) {
-            try {
-              const parsed = JSON.parse(line.trim().slice(6));
-              if (parsed.error) {
-                assistantText = `Error: ${parsed.error}`;
-                finished = true;
-                break;
-              }
-              if (parsed.content) {
-                assistantText += parsed.content;
-                setMessages(prev => {
-                  const updated = [...prev];
-                  updated[updated.length - 1] = {
-                    role: "assistant",
-                    content: assistantText
-                  };
-                  return updated;
-                });
-              }
-              if (parsed.done) {
-                finished = true;
-                break;
-              }
-            } catch (e) {
-              // Ignore partial chunk parse failures
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      setMessages(prev => {
-        const updated = [...prev];
-        updated[updated.length - 1] = {
-          role: "assistant",
-          content: "Error: Could not connect to the server. Please verify the application backend is active and running."
-        };
-        return updated;
-      });
-    } finally {
-      setIsSending(false);
-    }
+    );
   };
 
   const presetSuggestions = [
@@ -215,7 +171,41 @@ export default function AIChatAssistant() {
   ];
 
   return (
-    <div className="min-h-screen p-4 md:p-8 flex flex-col realistic-bg">
+    <div className="min-h-screen p-4 md:p-8 flex flex-col realistic-bg relative">
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden p-6 relative">
+            <button onClick={() => setIsSettingsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-3 mb-4 text-blue-600">
+              <Key className="w-6 h-6" />
+              <h2 className="text-xl font-bold text-gray-900">API Configuration</h2>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              To use the AI Travel Assistant directly in your browser without a backend, please provide a Groq API Key. 
+              You can get a free key at <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer" className="text-blue-600 underline">console.groq.com</a>.
+            </p>
+            <div className="space-y-3">
+              <Input
+                type="password"
+                placeholder="gsk_..."
+                value={tempApiKey}
+                onChange={(e) => setTempApiKey(e.target.value)}
+                className="w-full"
+              />
+              <Button onClick={saveSettings} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                Save & Continue
+              </Button>
+            </div>
+            <p className="text-xs text-gray-400 mt-4 text-center">
+              Your key is saved locally in your browser and never sent to our servers.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto w-full flex-1 flex flex-col">
         {/* Header and Controls */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -229,18 +219,23 @@ export default function AIChatAssistant() {
             </p>
           </div>
 
-          <div className="flex items-center bg-white p-2 rounded-xl shadow-sm border border-blue-50/50">
-            {/* Status indicator */}
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold">
-              {isOnline ? (
-                <span className="flex items-center gap-1 text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
-                  <CheckCircle className="w-3.5 h-3.5" /> Assistant: Online
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">
-                  <AlertCircle className="w-3.5 h-3.5" /> Assistant: Offline
-                </span>
-              )}
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsSettingsOpen(true)} className="bg-white">
+              <Settings className="w-4 h-4 mr-2 text-gray-600" />
+              API Settings
+            </Button>
+            <div className="flex items-center bg-white p-2 rounded-xl shadow-sm border border-blue-50/50">
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold">
+                {apiKey ? (
+                  <span className="flex items-center gap-1 text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
+                    <CheckCircle className="w-3.5 h-3.5" /> Ready
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">
+                    <AlertCircle className="w-3.5 h-3.5" /> Missing API Key
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -325,17 +320,13 @@ export default function AIChatAssistant() {
                 <Input
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder={
-                    !isOnline 
-                      ? "The Travel Assistant is currently offline. Please try again later..." 
-                      : "Ask anything about itineraries, packing, or travel planning..."
-                  }
+                  placeholder="Ask anything about itineraries, packing, or travel planning..."
                   className="flex-1 bg-gray-50 border-0 focus:bg-white focus:ring-1 focus:ring-blue-300 text-sm py-5 rounded-xl text-gray-800"
-                  disabled={isSending || !isOnline}
+                  disabled={isSending}
                 />
                 <Button 
                   type="submit" 
-                  disabled={!inputText.trim() || isSending || !isOnline}
+                  disabled={!inputText.trim() || isSending}
                   className="rounded-xl px-5 py-5 bg-gradient-to-r from-blue-500 to-teal-500 text-white shadow-sm hover:shadow-md transition-all duration-200"
                 >
                   <Send className="w-4 h-4" />

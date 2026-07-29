@@ -19,18 +19,13 @@ export class User {
   static async me() {
     try {
       const stored = localStorage.getItem('tripPlannerUser');
-      const token = stored ? JSON.parse(stored).token : '';
+      if (!stored) throw new Error("Not logged in");
+      const user = JSON.parse(stored);
       
-      const response = await fetch(`${API_BASE}/user/me`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return new User(data);
+      const usersDb = JSON.parse(localStorage.getItem('tripPlannerUsersDb') || '[]');
+      const userProfile = usersDb.find(u => u.username === user.username) || {};
+      
+      return new User({ ...userProfile, full_name: userProfile.full_name || user.username });
     } catch (error) {
       console.error("Error loading user profile:", error);
       return new User();
@@ -40,21 +35,18 @@ export class User {
   static async updateMyUserData(profileData) {
     try {
       const stored = localStorage.getItem('tripPlannerUser');
-      const token = stored ? JSON.parse(stored).token : '';
+      if (!stored) throw new Error("Not logged in");
+      const user = JSON.parse(stored);
       
-      const response = await fetch(`${API_BASE}/user/me`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(profileData)
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const usersDb = JSON.parse(localStorage.getItem('tripPlannerUsersDb') || '[]');
+      const index = usersDb.findIndex(u => u.username === user.username);
+      
+      if (index > -1) {
+        usersDb[index] = { ...usersDb[index], ...profileData };
+        localStorage.setItem('tripPlannerUsersDb', JSON.stringify(usersDb));
+        return new User(usersDb[index]);
       }
-      const data = await response.json();
-      return new User(data);
+      throw new Error("User not found in DB");
     } catch (error) {
       console.error("Error updating user profile:", error);
       throw error;

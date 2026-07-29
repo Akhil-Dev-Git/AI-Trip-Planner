@@ -436,24 +436,41 @@ export default function PlanTrip() {
                   {suggestedPlaces.map((place) => (
                     <div
                       key={place.id}
-                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                      className={`p-3 rounded-lg border-2 cursor-pointer transition-all flex gap-4 ${
                         selectedPlaces.find(p => p.id === place.id)
                           ? "border-blue-500 bg-blue-50"
                           : "border-gray-200 hover:border-gray-300"
                       }`}
                       onClick={() => togglePlaceSelection(place)}
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">{place.name}</h4>
-                        <Badge variant="outline" className="text-xs">
-                          {place.region?.replace('_', ' ')}
-                        </Badge>
+                      <div className="w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                        {place.image_url ? (
+                          <img 
+                            src={place.image_url} 
+                            alt={place.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <MapPin className="w-8 h-8 text-gray-400" />
+                          </div>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{place.location}</p>
-                      <p className="text-sm text-green-600 flex items-center gap-1">
-                        <IndianRupee className="w-3 h-3" />
-                        ₹{place.estimated_cost_per_day}/day
-                      </p>
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-medium text-gray-900 truncate pr-2">{place.name}</h4>
+                            <Badge variant="outline" className="text-xs whitespace-nowrap">
+                              {place.region?.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2 truncate">{place.location}</p>
+                        </div>
+                        <p className="text-sm text-green-600 flex items-center gap-1">
+                          <IndianRupee className="w-3 h-3" />
+                          ₹{place.estimated_cost_per_day}/day
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>

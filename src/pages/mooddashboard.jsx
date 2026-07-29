@@ -22,26 +22,26 @@ import {
 } from "lucide-react";
 
 const moods = [
-  { id: "adventure", name: "Adventure", icon: Mountain, color: "from-orange-500 to-red-500", description: "Thrilling experiences and outdoor activities" },
-  { id: "relaxation", name: "Relaxation", icon: Sparkles, color: "from-blue-400 to-cyan-400", description: "Peaceful retreats and spa destinations" },
-  { id: "cultural", name: "Cultural", icon: Camera, color: "from-purple-500 to-pink-500", description: "Rich heritage and traditional experiences" },
-  { id: "spiritual", name: "Spiritual", icon: Heart, color: "from-yellow-400 to-orange-400", description: "Sacred places and mindful journeys" },
-  { id: "romantic", name: "Romantic", icon: Heart, color: "from-pink-500 to-rose-500", description: "Perfect for couples and romantic getaways" },
-  { id: "family", name: "Family", icon: Users, color: "from-green-400 to-blue-400", description: "Fun activities for all ages" },
-  { id: "solo", name: "Solo Travel", icon: User, color: "from-indigo-500 to-purple-500", description: "Perfect for independent travelers" },
-  { id: "luxury", name: "Luxury", icon: Crown, color: "from-yellow-500 to-amber-500", description: "Premium experiences and five-star comfort" },
-  { id: "budget", name: "Budget-Friendly", icon: Wallet, color: "from-emerald-400 to-teal-500", description: "Great experiences without breaking the bank" },
-  { id: "nature", name: "Nature", icon: Leaf, color: "from-green-500 to-emerald-500", description: "Natural wonders and eco-friendly destinations" },
-  { id: "urban", name: "Urban", icon: Building, color: "from-gray-500 to-slate-600", description: "City life and metropolitan experiences" },
-  { id: "heritage", name: "Heritage", icon: Camera, color: "from-amber-600 to-orange-600", description: "Historical sites and ancient wonders" },
-  { id: "beach", name: "Beach", icon: Waves, color: "from-cyan-400 to-blue-500", description: "Coastal destinations and water activities" },
-  { id: "mountain", name: "Mountain", icon: Mountain, color: "from-slate-600 to-gray-700", description: "Hill stations and mountain adventures" },
-  { id: "desert", name: "Desert", icon: Sun, color: "from-yellow-600 to-orange-500", description: "Desert landscapes and unique cultures" },
-  { id: "wildlife", name: "Wildlife", icon: TreePine, color: "from-green-600 to-lime-500", description: "Safari and wildlife sanctuaries" },
-  { id: "festival", name: "Festival", icon: Music, color: "from-violet-500 to-purple-600", description: "Celebrations and cultural festivals" },
-  { id: "food", name: "Food", icon: Utensils, color: "from-red-500 to-pink-500", description: "Culinary journeys and food experiences" },
-  { id: "art", name: "Art & Culture", icon: Palette, color: "from-indigo-400 to-blue-500", description: "Museums, galleries, and artistic experiences" },
-  { id: "wellness", name: "Wellness", icon: Sparkles, color: "from-teal-400 to-green-400", description: "Health, wellness, and rejuvenation" },
+  { id: "adventure", name: "Adventure", icon: Mountain, color: "from-orange-500 to-red-500", description: "Thrilling experiences and outdoor activities", image: "https://images.unsplash.com/photo-1533692328991-08159ff19fca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "relaxation", name: "Relaxation", icon: Sparkles, color: "from-blue-400 to-cyan-400", description: "Peaceful retreats and spa destinations", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "cultural", name: "Cultural", icon: Camera, color: "from-purple-500 to-pink-500", description: "Rich heritage and traditional experiences", image: "https://images.unsplash.com/photo-1518998053401-b2c395ffbb74?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "spiritual", name: "Spiritual", icon: Heart, color: "from-yellow-400 to-orange-400", description: "Sacred places and mindful journeys", image: "https://images.unsplash.com/photo-1514800790936-3914a229a43a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "romantic", name: "Romantic", icon: Heart, color: "from-pink-500 to-rose-500", description: "Perfect for couples and romantic getaways", image: "https://images.unsplash.com/photo-1518104593124-ac2e82a5eb9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "family", name: "Family", icon: Users, color: "from-green-400 to-blue-400", description: "Fun activities for all ages", image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "solo", name: "Solo Travel", icon: User, color: "from-indigo-500 to-purple-500", description: "Perfect for independent travelers", image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "luxury", name: "Luxury", icon: Crown, color: "from-yellow-500 to-amber-500", description: "Premium experiences and five-star comfort", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "budget", name: "Budget-Friendly", icon: Wallet, color: "from-emerald-400 to-teal-500", description: "Great experiences without breaking the bank", image: "https://images.unsplash.com/photo-1553531384-397c80973a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "nature", name: "Nature", icon: Leaf, color: "from-green-500 to-emerald-500", description: "Natural wonders and eco-friendly destinations", image: "https://images.unsplash.com/photo-1441974231531-c8c8cf98f040?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "urban", name: "Urban", icon: Building, color: "from-gray-500 to-slate-600", description: "City life and metropolitan experiences", image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "heritage", name: "Heritage", icon: Camera, color: "from-amber-600 to-orange-600", description: "Historical sites and ancient wonders", image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "beach", name: "Beach", icon: Waves, color: "from-cyan-400 to-blue-500", description: "Coastal destinations and water activities", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "mountain", name: "Mountain", icon: Mountain, color: "from-slate-600 to-gray-700", description: "Hill stations and mountain adventures", image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "desert", name: "Desert", icon: Sun, color: "from-yellow-600 to-orange-500", description: "Desert landscapes and unique cultures", image: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "wildlife", name: "Wildlife", icon: TreePine, color: "from-green-600 to-lime-500", description: "Safari and wildlife sanctuaries", image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "festival", name: "Festival", icon: Music, color: "from-violet-500 to-purple-600", description: "Celebrations and cultural festivals", image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "food", name: "Food", icon: Utensils, color: "from-red-500 to-pink-500", description: "Culinary journeys and food experiences", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "art", name: "Art & Culture", icon: Palette, color: "from-indigo-400 to-blue-500", description: "Museums, galleries, and artistic experiences", image: "https://images.unsplash.com/photo-1544413660-299165566b1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+  { id: "wellness", name: "Wellness", icon: Sparkles, color: "from-teal-400 to-green-400", description: "Health, wellness, and rejuvenation", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
 ];
 
 export default function MoodDashboard() {
@@ -70,29 +70,34 @@ export default function MoodDashboard() {
               transition={{ delay: index * 0.05 }}
               whileHover={{ y: -8, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              className="h-full"
             >
               <Link 
                 to={`${createPageUrl("ExplorePlaces")}?mood=${mood.id}`}
-                className="group block"
+                className="group block h-full"
               >
-                <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${mood.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
+                <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 h-72">
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                    style={{ backgroundImage: `url(${mood.image})` }}
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-black/20 opacity-80 group-hover:opacity-90 transition-opacity duration-500`} />
                   
-                  <div className="relative p-6">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${mood.color} p-3 mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${mood.color} p-3 mb-4 group-hover:-translate-y-2 transition-transform duration-300 shadow-lg`}>
                       <mood.icon className="w-full h-full text-white" />
                     </div>
                     
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-200 transition-colors duration-300">
                       {mood.name}
                     </h3>
                     
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-200 leading-relaxed transform translate-y-2 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                       {mood.description}
                     </p>
                   </div>
                   
-                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${mood.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`} />
+                  <div className={`absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r ${mood.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left z-10`} />
                 </div>
               </Link>
             </motion.div>

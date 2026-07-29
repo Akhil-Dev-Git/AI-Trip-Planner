@@ -283,7 +283,14 @@ export default function TravelHistory() {
                       >
                         <Card className="overflow-hidden bg-white hover:shadow-2xl transition-all duration-300 border-0 shadow-lg">
                           <div className="relative h-32 bg-gradient-to-br from-blue-400 to-teal-500">
-                            <div className="absolute inset-0 bg-black/20" />
+                            {trip.places_to_visit && trip.places_to_visit.length > 0 && allPlaces.find(p => p.id === trip.places_to_visit[0])?.image_url && (
+                              <img 
+                                src={allPlaces.find(p => p.id === trip.places_to_visit[0]).image_url} 
+                                alt={trip.destination}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-black/40" />
                             <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
                               <Badge className={`${getStatusColor(trip.status)} border-0`}>
                                 <StatusIcon className="w-3 h-3 mr-1" />

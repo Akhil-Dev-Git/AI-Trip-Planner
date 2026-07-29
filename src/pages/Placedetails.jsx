@@ -282,18 +282,27 @@ export default function PlaceDetails() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {place.nearby_hotels.slice(0, 3).map((hotel, index) => (
-                    <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">{hotel.name}</h4>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                          <span className="text-sm text-gray-600">{hotel.rating}</span>
-                        </div>
+                    <div key={index} className="p-3 bg-gray-50 rounded-lg flex gap-3 items-center">
+                      <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-200">
+                        <img 
+                          src={`https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80&sig=${index}`} 
+                          alt={hotel.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <p className="text-sm text-gray-600 flex items-center gap-1">
-                        <IndianRupee className="w-3 h-3" />
-                        ₹{hotel.price_per_night}/night
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-1">
+                          <h4 className="font-medium text-gray-900">{hotel.name}</h4>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                            <span className="text-sm text-gray-600">{hotel.rating}</span>
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          <IndianRupee className="w-3 h-3" />
+                          ₹{hotel.price_per_night}/night
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </CardContent>
@@ -311,13 +320,22 @@ export default function PlaceDetails() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {place.nearby_restaurants.slice(0, 3).map((restaurant, index) => (
-                    <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                      <h4 className="font-medium text-gray-900 mb-1">{restaurant.name}</h4>
-                      <p className="text-sm text-gray-600 mb-1">{restaurant.cuisine}</p>
-                      <p className="text-sm text-gray-600 flex items-center gap-1">
-                        <IndianRupee className="w-3 h-3" />
-                        ₹{restaurant.avg_cost_for_two} for two
-                      </p>
+                    <div key={index} className="p-3 bg-gray-50 rounded-lg flex gap-3 items-center">
+                      <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-200">
+                        <img 
+                          src={`https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80&sig=${index}`} 
+                          alt={restaurant.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900 mb-1">{restaurant.name}</h4>
+                        <p className="text-sm text-gray-600 mb-1">{restaurant.cuisine}</p>
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          <IndianRupee className="w-3 h-3" />
+                          ₹{restaurant.avg_cost_for_two} for two
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </CardContent>

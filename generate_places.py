@@ -149,6 +149,12 @@ for mood in moods:
         suffix = suffixes[i % len(suffixes)]
         name = f"{city} {suffix} {i//10 + 1}"
         
+        # Generate a unique, realistic image based on the city and mood using Pollinations AI
+        import urllib.parse
+        prompt = f"realistic travel photography of {city} {mood} destination beautiful scenery"
+        encoded_prompt = urllib.parse.quote(prompt)
+        img = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=800&height=600&nologo=true&seed={place_id}"
+        
         # Add offset to coordinates to make each location unique
         lat = loc[1] + (i % 10) * 0.005
         lng = loc[2] + (i % 10) * 0.005

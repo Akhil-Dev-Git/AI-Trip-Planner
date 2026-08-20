@@ -152,5 +152,4 @@ export {
   SidebarFooter,
   SidebarProvider,
   SidebarTrigger,
-  useSidebar,
 };

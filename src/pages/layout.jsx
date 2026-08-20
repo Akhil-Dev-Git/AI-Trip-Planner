@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTravelStats } from "../contexts/TravelStatsContext";
+import { useAuth } from "../contexts/AuthContext";
 import { createPageUrl } from "../utils";
 import { motion } from "framer-motion";
 import {
@@ -64,6 +65,7 @@ const navigationItems = [
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const { tripsPlanned, placesVisited } = useTravelStats();
+  const { user } = useAuth();
 
   return (
     <SidebarProvider>
@@ -138,18 +140,18 @@ export default function Layout({ children, currentPageName }) {
 
           <SidebarFooter className="border-t border-blue-100 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-teal-400 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-teal-400 rounded-full flex items-center justify-center shadow-sm">
                 <User className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900 text-sm truncate">Travel Explorer</p>
+                <p className="font-medium text-gray-900 text-sm truncate capitalize">{user?.username || 'Travel Explorer'}</p>
                 <p className="text-xs text-gray-500 truncate">Discover your next adventure</p>
               </div>
             </div>
           </SidebarFooter>
         </Sidebar>
 
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col min-w-0">
           <header className="bg-white/90 backdrop-blur-sm border-b border-blue-100 px-6 py-4 md:hidden">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="hover:bg-blue-50 p-2 rounded-lg transition-colors duration-200" />

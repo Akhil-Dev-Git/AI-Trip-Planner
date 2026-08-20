@@ -27,8 +27,10 @@ const Sidebar = React.forwardRef(({ className, ...props }, ref) => {
       <div
         ref={ref}
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-col border-r bg-background transition-transform duration-300 md:static md:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full',
+          'h-full w-64 flex-col border-r bg-background',
+          isOpen 
+            ? 'fixed inset-y-0 left-0 z-50 flex shadow-2xl' 
+            : 'hidden md:flex md:static',
           className
         )}
         {...props}

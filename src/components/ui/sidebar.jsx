@@ -20,14 +20,14 @@ const Sidebar = React.forwardRef(({ className, ...props }, ref) => {
       {/* Mobile overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
       <div
         ref={ref}
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-col border-r bg-background transition-transform duration-300 md:static md:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex h-full w-64 flex-col border-r bg-background transition-transform duration-300 lg:static lg:translate-x-0',
           isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full',
           className
         )}

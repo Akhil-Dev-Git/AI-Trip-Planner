@@ -152,7 +152,7 @@ export default function Layout({ children, currentPageName }) {
         </Sidebar>
 
         <main className="flex-1 flex flex-col min-w-0">
-          <header className="bg-white/90 backdrop-blur-sm border-b border-blue-100 px-6 py-4 md:hidden">
+          <header className="bg-white/90 backdrop-blur-sm border-b border-blue-100 px-6 py-4 lg:hidden">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="hover:bg-blue-50 p-2 rounded-lg transition-colors duration-200" />
               <h1 className="text-xl font-bold text-gray-900">AI Trip Planner</h1>

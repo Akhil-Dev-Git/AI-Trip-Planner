@@ -117,7 +117,7 @@ const SidebarProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <SidebarContext.Provider value={{ isOpen, setIsOpen }}>
-      <div className="flex h-screen w-full overflow-hidden">{children}</div>
+      <div className="flex h-[100dvh] w-full overflow-hidden">{children}</div>
     </SidebarContext.Provider>
   );
 };

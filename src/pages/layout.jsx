@@ -69,7 +69,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full realistic-bg">
+      <div className="min-h-[100dvh] flex w-full realistic-bg">
         <Sidebar className="border-r border-blue-100/50 glass-panel">
           <SidebarHeader className="border-b border-blue-100 p-6">
             <div className="flex items-center gap-3">
